@@ -15,8 +15,15 @@ def extract_services(xml_file):
         for port in host.find('ports').findall('port'):
             portid = port.attrib['portid']
             service = port.find('service')
-            name = service.attrib.get('name', 'unknown')
-            product = service.attrib.get('product', '')
-            version = service.attrib.get('version', '')
+
+            if service is not None:
+                name = service.attrib.get('name', 'unknown')
+                product = service.attrib.get('product', '')
+                version = service.attrib.get('version', '')
+            else:
+                name = 'unknown'
+                product = ''
+                version = ''
+
             result.append(f"{ip}:{portid} - {name} {product} {version}")
     return "\n".join(result)
