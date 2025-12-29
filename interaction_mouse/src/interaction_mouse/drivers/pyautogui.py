@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import time
 
-from interaction_mouse_gpt.src.interaction_mouse.errors import DriverError
-from interaction_mouse_gpt.src.interaction_mouse.models import Button
+from interaction_mouse.src.interaction_mouse.errors import DriverError
+from interaction_mouse.src.interaction_mouse.models import Button
 
 
 class PyAutoGuiDriver:
