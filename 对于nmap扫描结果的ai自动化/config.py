@@ -1,5 +1,0 @@
-# IP范围、扫描参数等配置
-
-
-API_KEY = "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"
-# 这边GPT的建议是加到环境变量里，增加安全性，但是我现在连这个都没用熟，以后再修改吧。
