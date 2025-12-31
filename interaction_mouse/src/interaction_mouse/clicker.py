@@ -10,20 +10,28 @@ entry point for mouse interaction functionality.
 
 from typing import Optional, Sequence, Tuple, Union, overload
 
-from .models import Button, Point, Rect
+from .models import Button, Point, Rect, WindowNormalizedPoint
 from .protocol import IMouseDriver
 from .drivers import get_default_driver
 from .timing import Delay
 from .actions import ClickAction, RepeatClickAction, RandomClickAction, DragAction
+from .adapters.window_finder_adapter import get_client_rect
+from .transforms.normalize import window_norm_to_screen_point
 
 
 PointLike = Union[Point, Tuple[int, int], Sequence[int]]
 RectLike = Union[Rect, Tuple[int, int, int, int], Sequence[int]]
 ButtonLike = Union[Button, str]
+# 这是为了让用户调用更爽，不用强制他们必须构造 Point/Rect 才能用。
 
 
 def _as_point(p: PointLike) -> Point:
+    """
+    把各种“PointLike”输入统一转换成标准类型的 Point。
+    """
     if isinstance(p, Point):
+    # isinstance(p, Point) 的意思是 ： 判断变量 p 是不是 Point 这个类型（或它的子类）的实例，
+    # 如果是 → True， 不是 → False。
         return p
     if isinstance(p, tuple) and len(p) == 2:
         x, y = p
@@ -146,4 +154,16 @@ class Clicker:
             duration=float(duration),
             steps=int(steps),
             button=b,
+        )
+
+    def click_window_norm(self, target: WindowNormalizedPoint) -> None:
+        """
+        Click a normalized point inside a window client area.
+        """
+        client = get_client_rect(target.keyword)
+        pt = window_norm_to_screen_point(client, target)
+
+        ClickAction(**self._ctx()).execute(
+            point=pt,
+            button=target.button,
         )

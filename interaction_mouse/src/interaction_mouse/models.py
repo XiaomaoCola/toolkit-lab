@@ -49,3 +49,15 @@ class Rect:
     @property
     def height(self) -> int:
         return self.bottom - self.top
+
+@dataclass(frozen=True, slots=True)
+class WindowNormalizedPoint:
+    """
+    A point defined by:
+    - window keyword
+    - normalized coordinates (0~1) inside client area
+    """
+    keyword: str
+    x: float
+    y: float
+    button: Button = Button.LEFT
