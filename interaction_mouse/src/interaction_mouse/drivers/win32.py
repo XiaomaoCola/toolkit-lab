@@ -4,6 +4,10 @@ import time
 import ctypes
 from ctypes import wintypes
 
+# compat: ULONG_PTR may be missing on some Python builds
+if not hasattr(wintypes, "ULONG_PTR"):
+    wintypes.ULONG_PTR = ctypes.c_ulonglong if ctypes.sizeof(ctypes.c_void_p) == 8 else ctypes.c_ulong
+
 from ..errors import DriverError
 from ..models import Button
 
