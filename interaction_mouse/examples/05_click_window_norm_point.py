@@ -12,4 +12,4 @@ if __name__ == "__main__":
         button=Button.LEFT,
     )
 
-    c.click_window_norm(target)
+    c.click_window_norm_point(target)
