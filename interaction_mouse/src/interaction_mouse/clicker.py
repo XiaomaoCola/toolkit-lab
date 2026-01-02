@@ -10,13 +10,13 @@ entry point for mouse interaction functionality.
 
 from typing import Optional, Sequence, Tuple, Union, overload
 
-from .models import Button, Point, Rect, WindowNormalizedPoint
+from .models import Button, Point, Rect, WindowNormalizedPoint, WindowNormalizedRect
 from .protocol import IMouseDriver
 from .drivers import get_default_driver
 from .timing import Delay
 from .actions import ClickAction, RepeatClickAction, RandomClickAction, DragAction
 from .adapters.window_finder_adapter import get_client_rect
-from .transforms.normalize import window_norm_to_screen_point
+from .transforms.normalize import window_norm_point_to_screen_point, window_norm_rect_to_screen_rect
 
 
 PointLike = Union[Point, Tuple[int, int], Sequence[int]]
@@ -165,10 +165,32 @@ class Clicker:
         其次是未来要加新的函数click_window_norm_rect和新的变量WindowNormalizedRect，从而便于区分。
         """
         client = get_client_rect(target.keyword)
-        pt = window_norm_to_screen_point(client, target)
+        pt = window_norm_point_to_screen_point(client, target)
 
         ClickAction(**self._ctx()).execute(
             point=pt,
             button=target.button,
             jitter_px=jitter_px,
+        )
+
+    def click_window_norm_rect_rand(
+        self,
+        target: WindowNormalizedRect,
+        *,
+        count: int = 1,
+        interval: Delay = 0.0,
+        avoid_edges_px: int = 0,
+    ) -> None:
+        """
+        Random click inside a normalized rect inside a window client area.
+        """
+        client = get_client_rect(target.keyword)
+        screen_rect = window_norm_rect_to_screen_rect(client, target)
+
+        RandomClickAction(**self._ctx()).execute(
+            rect=screen_rect,
+            count=max(0, int(count)),
+            interval=interval,
+            avoid_edges_px=int(avoid_edges_px),
+            button=target.button,
         )
